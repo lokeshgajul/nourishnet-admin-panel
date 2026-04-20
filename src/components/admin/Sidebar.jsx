@@ -3,12 +3,13 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { 
-  LayoutDashboard, 
-  Building2, 
-  Settings, 
+import {
+  LayoutDashboard,
+  Building2,
+  Users,
+  MessageSquare,
+  Settings,
   LogOut,
-  ChevronRight
 } from 'lucide-react';
 
 export default function Sidebar() {
@@ -17,6 +18,8 @@ export default function Sidebar() {
   const menuItems = [
     { label: 'Dashboard', icon: LayoutDashboard, href: '/' },
     { label: 'NGO Applications', icon: Building2, href: '/admin/ngos' },
+    { label: 'Donors', icon: Users, href: '/admin/donors' },
+    { label: 'Feedback', icon: MessageSquare, href: '/admin/feedback' },
     { label: 'Settings', icon: Settings, href: '/admin/settings' },
   ];
 

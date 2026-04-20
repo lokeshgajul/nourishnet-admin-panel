@@ -1,15 +1,17 @@
 import mongoose from 'mongoose';
 
 const NgoSchema = new mongoose.Schema({
+  role: { type: String, default: 'Ngo' },
   ngoName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   phone: { type: String, required: true },
   address: { type: String, required: true },
   bio: { type: String },
+  profileImage: { type: String },
   registrationProof: { type: String },
   status: {
     type: String,
-    enum: ['PENDING', 'APPROVED', 'REJECTED'],
+    enum: ['PENDING', 'APPROVED', 'REJECTED', 'SUSPENDED'],
     default: 'PENDING'
   },
   approvedAt: { type: Date },
