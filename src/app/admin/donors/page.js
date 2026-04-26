@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Search, Loader2, UserX, RefreshCw, User } from 'lucide-react';
+import { Search, Loader2, UserX, UserCheck, RefreshCw, User } from 'lucide-react';
 
 function StatusBadge({ status }) {
   const styles = {
@@ -22,6 +22,7 @@ export default function DonorManagementPage() {
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [suspendingId, setSuspendingId] = useState(null);
+  const [activatingId, setActivatingId] = useState(null);
 
   const fetchDonors = async () => {
     try {
@@ -41,6 +42,21 @@ export default function DonorManagementPage() {
   useEffect(() => {
     fetchDonors();
   }, [statusFilter]);
+
+  const handleActivate = async (donor) => {
+    if (!confirm(`Reactivate "${donor.donorName}"? They will regain full access.`)) return;
+
+    try {
+      setActivatingId(donor._id);
+      await axios.patch(`/api/admin/donor/${donor._id}/activate`);
+      fetchDonors();
+    } catch (error) {
+      console.error('Error activating donor:', error);
+      alert('Failed to activate donor');
+    } finally {
+      setActivatingId(null);
+    }
+  };
 
   const handleSuspend = async (donor) => {
     if (!confirm(`Suspend "${donor.donorName}"? They will be logged out immediately.`)) return;
@@ -182,7 +198,18 @@ export default function DonorManagementPage() {
                           Suspend
                         </button>
                       ) : (
-                        <span className="text-xs text-gray-400 italic">Suspended</span>
+                        <button
+                          onClick={() => handleActivate(donor)}
+                          disabled={activatingId === donor._id}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-600 border border-green-200 rounded-lg text-xs font-semibold hover:bg-green-100 transition-colors disabled:opacity-50"
+                        >
+                          {activatingId === donor._id ? (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          ) : (
+                            <UserCheck className="w-3.5 h-3.5" />
+                          )}
+                          Activate
+                        </button>
                       )}
                     </td>
                   </tr>

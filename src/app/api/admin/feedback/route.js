@@ -7,10 +7,14 @@ export async function GET(request) {
     await dbConnect();
     const { searchParams } = new URL(request.url);
     const search = searchParams.get("search");
+    const role = searchParams.get("role");
 
     let query = {};
     if (search) {
       query.feedback = { $regex: search, $options: "i" };
+    }
+    if (role && role !== "ALL") {
+      query.role = { $regex: `^${role}$`, $options: "i" };
     }
 
     const feedbacks = await Feedback.find(query).sort({ createdAt: -1 });
